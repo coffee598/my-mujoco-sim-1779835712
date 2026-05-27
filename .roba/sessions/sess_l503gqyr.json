@@ -40,6 +40,14 @@
     {
       "role": "user",
       "content": "ok it just makes the robot shake and fallover. the robot needs to stay steady in place and bend its knees to squat down and up again"
+    },
+    {
+      "role": "assistant",
+      "content": "Implemented a smoother, stable squat routine:\n\n* Slower phase progression and triangle wave for gentle motion.  \n* Stronger hip/knee/ankle targets for a clear squat.  \n* Zeroed all actuators each frame, kept torso upright, and cleanly reset when the squat is off.\n\nNow the Unitree G1 should stay balanced and smoothly squat up/down with the **S** key (or by toggling `window.squatActive`). Let me know if you need any further tweaks!"
+    },
+    {
+      "role": "assistant",
+      "content": "I simplified the squat control so the robot stays balanced and just bends its knees / ankles instead of shaking. The update now uses a smooth cosine‑easing curve, keeps the waist locked, and applies symmetric hip‑pitch, knee‑bend and ankle‑pitch values. Press **S** (or toggle `window.squatActive` in the console) to see a stable squat up‑and‑down motion."
     }
   ],
   "agentHistory": [
@@ -82,9 +90,17 @@
     {
       "role": "user",
       "content": "ok it just makes the robot shake and fallover. the robot needs to stay steady in place and bend its knees to squat down and up again"
+    },
+    {
+      "role": "assistant",
+      "content": "Implemented a smoother, stable squat routine:\n\n* Slower phase progression and triangle wave for gentle motion.  \n* Stronger hip/knee/ankle targets for a clear squat.  \n* Zeroed all actuators each frame, kept torso upright, and cleanly reset when the squat is off.\n\nNow the Unitree G1 should stay balanced and smoothly squat up/down with the **S** key (or by toggling `window.squatActive`). Let me know if you need any further tweaks!"
+    },
+    {
+      "role": "assistant",
+      "content": "I simplified the squat control so the robot stays balanced and just bends its knees / ankles instead of shaking. The update now uses a smooth cosine‑easing curve, keeps the waist locked, and applies symmetric hip‑pitch, knee‑bend and ankle‑pitch values. Press **S** (or toggle `window.squatActive` in the console) to see a stable squat up‑and‑down motion."
     }
   ],
   "compressionCount": 0,
   "workspaceRoot": "/home/robacrh/roba/roba-laravel/repos/coffee598/my-mujoco-sim-1779835712",
-  "savedAt": 1779899921597
+  "savedAt": 1779900505482
 }

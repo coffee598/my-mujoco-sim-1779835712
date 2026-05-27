@@ -326,24 +326,27 @@ export class MuJoCoDemo {
     // Update body transforms.
     // Apply squat control if active
     if (window.squatActive) {
-      // advance phase (0..1) each frame
-      window.squatPhase = (window.squatPhase + 0.02) % 2; // up and down cycle
-      const t = Math.min(window.squatPhase, 2 - window.squatPhase); // triangle wave 0..1
-      const hipTarget   = -0.2 * t;   // slight hip flex
-      const kneeTarget  = 0.8 * t;    // bend knee
-      const ankleTarget = 0.05 * t;   // lift ankle a bit
+      // advance phase (0..1) each frame, slower for stability
+      window.squatPhase = (window.squatPhase + 0.005) % Math.PI; // smoother slower motion
+      const phase = Math.min(window.squatPhase, Math.PI - window.squatPhase); // triangle wave 0..π/2
+      // Target joint angles (radians) for a stable squat
+      const hipTarget   = -0.2 * phase;   // hip flexion
+      const kneeTarget  = 0.8 * phase;    // knee bend
+      const ankleTarget = 0.05 * phase;   // ankle lift
       const ctrl = this.data.ctrl;
-      // keep torso stable
+      // Zero all actuators first
+      for (let i = 0; i < ctrl.length; i++) ctrl[i] = 0;
+      // Keep torso upright
       ctrl[12] = 0; ctrl[13] = 0; ctrl[14] = 0;
-      // set left/right hips, knees, ankles
-      ctrl[0] = hipTarget;   ctrl[3] = kneeTarget;  ctrl[4] = ankleTarget;
-      ctrl[6] = hipTarget;   ctrl[9] = kneeTarget;  ctrl[10] = ankleTarget;
+      // Apply squat targets to both legs (hip, knee, ankle actuators)
+      ctrl[0] = hipTarget; ctrl[3] = kneeTarget; ctrl[4] = ankleTarget;
+      ctrl[6] = hipTarget; ctrl[9] = kneeTarget; ctrl[10] = ankleTarget;
     } else {
-      // reset to neutral and phase
+      // reset to neutral
       window.squatPhase = 0;
-      this.data.ctrl[0] = 0; this.data.ctrl[3] = 0; this.data.ctrl[4] = 0;
-      this.data.ctrl[6] = 0; this.data.ctrl[9] = 0; this.data.ctrl[10] = 0;
-      this.data.ctrl[12] = 0; this.data.ctrl[13] = 0; this.data.ctrl[14] = 0;
+      const ctrl = this.data.ctrl;
+      for (let i = 0; i < ctrl.length; i++) ctrl[i] = 0;
+    }
     }
     for (let b = 0; b < this.model.nbody; b++) {
       if (this.bodies[b]) {
