@@ -168,14 +168,10 @@ export class MuJoCoDemo {
       // Squat animation update
       // Toggle squatting with 's' key
       // Global state variables
-      if (typeof window.squatPhase === 'undefined') {
-        window.squatPhase = 0; window.squatting = false;
-        window.addEventListener('keydown', (e) => {
-          if (e.key === 's') { window.squatting = !window.squatting; window.squatPhase = 0; }
-        });
-      }
+      // Initialize squat control globals (once)
+// squat state initialized globally
       const updateSquat = (dt) => {
-        if (!window.squatting) return;
+        if (!window.squatActive) return;
         window.squatPhase += dt * 2; // 2 rad/s
         const target = 0.5 * (1 - Math.cos(window.squatPhase));
         const kneeBend = 0.6 * target;
@@ -328,3 +324,12 @@ export class MuJoCoDemo {
 
 let demo = new MuJoCoDemo();
 await demo.init();
+// Global squat control
+window.squatActive = false;
+window.squatPhase = 0;
+window.addEventListener('keydown', (e) => {
+  if (e.key === 's') {
+    window.squatActive = !window.squatActive;
+    window.squatPhase = 0;
+  }
+});
