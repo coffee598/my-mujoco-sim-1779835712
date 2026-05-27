@@ -1,0 +1,66 @@
+{
+  "sessionId": "sess_l503gqyr",
+  "fullHistory": [
+    {
+      "role": "user",
+      "content": "[ROBA_WELCOME_TRIGGER]"
+    },
+    {
+      "role": "user",
+      "content": "this doesn't work, fix it"
+    },
+    {
+      "role": "user",
+      "content": "js registration for simulation this xml model"
+    },
+    {
+      "role": "assistant",
+      "content": "Which XML scene file would you like to register for the simulation? Please provide its name (e.g., `my_robot.xml`)."
+    },
+    {
+      "role": "user",
+      "content": "the squat function"
+    },
+    {
+      "role": "assistant",
+      "content": "I see you want a squat routine for the Unitree G1. I’ve added a `squatDemo` helper, a toggle key (`s`), and a small patch to the render loop that calls it when `animatingSquat` is true. The function sets the hips, knees, and ankles to achieve a squat pose. Let me know if you’d like any tweaks or to bind it to a different key."
+    },
+    {
+      "role": "assistant",
+      "content": "Added a simple “squat” control block in **src/main.js**. It sets hip, knee, and ankle actuators when `window.squatActive` is true, and resets them otherwise. Try toggling `window.squatActive` in the console to see the robot squat."
+    }
+  ],
+  "agentHistory": [
+    {
+      "role": "user",
+      "content": "[ROBA_WELCOME_TRIGGER]"
+    },
+    {
+      "role": "user",
+      "content": "this doesn't work, fix it"
+    },
+    {
+      "role": "user",
+      "content": "js registration for simulation this xml model"
+    },
+    {
+      "role": "assistant",
+      "content": "Which XML scene file would you like to register for the simulation? Please provide its name (e.g., `my_robot.xml`)."
+    },
+    {
+      "role": "user",
+      "content": "the squat function"
+    },
+    {
+      "role": "assistant",
+      "content": "I see you want a squat routine for the Unitree G1. I’ve added a `squatDemo` helper, a toggle key (`s`), and a small patch to the render loop that calls it when `animatingSquat` is true. The function sets the hips, knees, and ankles to achieve a squat pose. Let me know if you’d like any tweaks or to bind it to a different key."
+    },
+    {
+      "role": "assistant",
+      "content": "Added a simple “squat” control block in **src/main.js**. It sets hip, knee, and ankle actuators when `window.squatActive` is true, and resets them otherwise. Try toggling `window.squatActive` in the console to see the robot squat."
+    }
+  ],
+  "compressionCount": 0,
+  "workspaceRoot": "/home/robacrh/roba/roba-laravel/repos/coffee598/my-mujoco-sim-1779835712",
+  "savedAt": 1779842955086
+}

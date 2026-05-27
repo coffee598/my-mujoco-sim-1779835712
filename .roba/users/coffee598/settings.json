@@ -1,0 +1,6 @@
+{
+  "model": "openai/gpt-oss-120b:free",
+  "superAgentModel": "anthropic/claude-sonnet-4.6",
+  "projectRoot": "/home/robacrh/roba/roba-laravel/repos/coffee598/my-mujoco-sim-1779835712",
+  "superAgentEnabled": false
+}
