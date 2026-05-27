@@ -171,16 +171,54 @@ export class MuJoCoDemo {
       // Initialize squat control globals (once)
 // squat state initialized globally
       const updateSquat = (dt) => {
-        if (!window.squatActive) return;
-        window.squatPhase += dt * 2; // 2 rad/s
-        const target = 0.5 * (1 - Math.cos(window.squatPhase));
-        const kneeBend = 0.6 * target;
-        const hipPitch = -0.4 * target;
+        // Keep torso upright
+        this.data.ctrl[12] = 0; // waist yaw
+        this.data.ctrl[13] = 0; // waist roll
+        this.data.ctrl[14] = 0; // waist pitch
+        if (!window.squatActive) {
+          // Reset leg controls
+          this.data.ctrl[0] = 0; // left hip pitch
+          this.data.ctrl[6] = 0; // right hip pitch
+          this.data.ctrl[3] = 0; // left knee
+          this.data.ctrl[9] = 0; // right knee
+          this.data.ctrl[4] = 0; // left ankle pitch
+          this.data.ctrl[10] = 0; // right ankle pitch
+          window.squatPhase = 0;
+          return;
+        }
+        // Increment phase (radians per second)
+        window.squatPhase += dt * Math.PI; // slower smooth motion
+        // Clamp phase to [0, PI]
+        const phase = Math.min(window.squatPhase, Math.PI);
+        // Compute smooth squat trajectory
+        const hip = -0.8 * Math.sin(phase); // hip pitch back
+        const knee = 1.2 * Math.sin(phase); // knee bend
+        const ankle = -0.3 * Math.sin(phase); // ankle adjust
         // Apply to both legs
+        this.data.ctrl[0] = hip;  // left hip pitch
+        this.data.ctrl[6] = hip;  // right hip pitch
+        this.data.ctrl[3] = knee; // left knee
+        this.data.ctrl[9] = knee; // right knee
+        this.data.ctrl[4] = ankle; // left ankle pitch
+        this.data.ctrl[10] = ankle; // right ankle pitch
+        // Reset phase after full squat cycle
+        if (window.squatPhase >= Math.PI) {
+          window.squatPhase = 0;
+        }
+        const phase = Math.min(window.squatPhase, Math.PI); // clamp to half cycle
+        const target = (1 - Math.cos(phase)) * 0.5; // 0..1 smooth
+        const kneeBend = 0.6 * target; // knee flex
+        const hipPitch = 0.3 * target; // slight hip dip forward
+        const anklePitch = 0.15 * target; // ankle support
+        // Apply symmetric leg controls
         this.data.ctrl[3] = kneeBend; // left knee
         this.data.ctrl[9] = kneeBend; // right knee
         this.data.ctrl[0] = hipPitch; // left hip pitch
         this.data.ctrl[6] = hipPitch; // right hip pitch
+        this.data.ctrl[4] = anklePitch; // left ankle pitch
+        this.data.ctrl[10] = anklePitch; // right ankle pitch
+        // Reset waist to keep balance
+        this.data.ctrl[12] = 0; this.data.ctrl[13] = 0; this.data.ctrl[14] = 0;
       };
       updateSquat(timestep);
 
@@ -288,14 +326,24 @@ export class MuJoCoDemo {
     // Update body transforms.
     // Apply squat control if active
     if (window.squatActive) {
+      // advance phase (0..1) each frame
+      window.squatPhase = (window.squatPhase + 0.02) % 2; // up and down cycle
+      const t = Math.min(window.squatPhase, 2 - window.squatPhase); // triangle wave 0..1
+      const hipTarget   = -0.2 * t;   // slight hip flex
+      const kneeTarget  = 0.8 * t;    // bend knee
+      const ankleTarget = 0.05 * t;   // lift ankle a bit
       const ctrl = this.data.ctrl;
-      // hips forward (negative), knees bend (positive), ankles slight negative
-      ctrl[0] = -0.5; ctrl[3] = 1.0; ctrl[4] = -0.2;
-      ctrl[6] = -0.5; ctrl[9] = 1.0; ctrl[10] = -0.2;
+      // keep torso stable
+      ctrl[12] = 0; ctrl[13] = 0; ctrl[14] = 0;
+      // set left/right hips, knees, ankles
+      ctrl[0] = hipTarget;   ctrl[3] = kneeTarget;  ctrl[4] = ankleTarget;
+      ctrl[6] = hipTarget;   ctrl[9] = kneeTarget;  ctrl[10] = ankleTarget;
     } else {
-      // reset to neutral
+      // reset to neutral and phase
+      window.squatPhase = 0;
       this.data.ctrl[0] = 0; this.data.ctrl[3] = 0; this.data.ctrl[4] = 0;
       this.data.ctrl[6] = 0; this.data.ctrl[9] = 0; this.data.ctrl[10] = 0;
+      this.data.ctrl[12] = 0; this.data.ctrl[13] = 0; this.data.ctrl[14] = 0;
     }
     for (let b = 0; b < this.model.nbody; b++) {
       if (this.bodies[b]) {
